@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import org.ros.address.InetAddressFactory;
+import org.ros.android.Config;
 import org.ros.android.RosActivity;
 import org.ros.android.view.camera.RosCameraPreviewView;
 import org.ros.node.NodeConfiguration;
@@ -93,7 +94,8 @@ public class MainActivity extends RosActivity {
         return true;
     }
 
-    @Override @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) //API = 15
+    @Override
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) //API = 15
     protected void init(NodeMainExecutor nodeMainExecutor) {
         this.nodeMainExecutor = nodeMainExecutor;
 
@@ -104,7 +106,7 @@ public class MainActivity extends RosActivity {
             PERMISSIONS[2] = Manifest.permission.READ_EXTERNAL_STORAGE;
             PERMISSIONS[3] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
             ActivityCompat.requestPermissions(this, PERMISSIONS, 0);
-        }else {
+        } else {
             NodeConfiguration nodeConfiguration1 = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress());
             nodeConfiguration1.setMasterUri(getMasterUri());
             nodeConfiguration1.setNodeName("android_sensors_driver_nav_sat_fix");
@@ -162,11 +164,13 @@ public class MainActivity extends RosActivity {
         if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay! Do the
-                executeGPS();
+//                executeGPS();
             }
             if (grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay! Do the
-                executeCamera();
+                if (!Config.isOnlyUseImu) {
+                    executeCamera();
+                }
             }
 
             if (grantResults.length > 2 && grantResults[2] == PackageManager.PERMISSION_GRANTED &&

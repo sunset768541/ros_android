@@ -35,6 +35,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Looper;
+import android.util.Log;
 
 import org.ros.namespace.GraphName;
 import org.ros.node.ConnectedNode;
@@ -170,7 +171,7 @@ public class ImuPublisher implements NodeMain {
                 //this.imu.getHeader().setStamp(Time.fromMillis(time_delta_millis + event.timestamp/1000000));
                 this.imu.getHeader().setStamp(connectedNode.getCurrentTime());
                 this.imu.getHeader().setFrameId("/imu");// TODO Make parameter
-
+                Log.e("Imu","发布"+event.values[0]);
                 publisher.publish(this.imu);
 
                 // Create a new message
