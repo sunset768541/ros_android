@@ -1,0 +1,3 @@
+rootProject.name = "myros"
+include ':app'
+include ':android_core_components'
