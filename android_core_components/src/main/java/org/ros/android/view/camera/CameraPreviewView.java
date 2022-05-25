@@ -143,7 +143,7 @@ public class CameraPreviewView extends ViewGroup {
   private void setupCameraParameters() {
     Camera.Parameters parameters = camera.getParameters();
 //    parameters.setAutoExposureLock(true);
-    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
+//    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
 
     List<Integer> sup = parameters.getSupportedPreviewFrameRates();
     for (Integer i:sup){
