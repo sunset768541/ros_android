@@ -105,6 +105,7 @@ class CompressedImagePublisher2  {
 //            return;//控制发送图片频率100ms 10HZ
 //        }
         Log.e("图像频率",1000/(System.currentTimeMillis()-startpu)+" hz ");
+        startpu = System.currentTimeMillis();
         Time currentTime = connectedNode.getCurrentTime();
         String frameId = "camera";
         sensor_msgs.CompressedImage image = imagePublisher.newMessage();
@@ -115,7 +116,7 @@ class CompressedImagePublisher2  {
         image.setData(stream.buffer().copy());
         stream.buffer().clear();
         imagePublisher.publish(image);
-        startpu = System.currentTimeMillis();
+
         if(currentTime.subtract(lastTime).secs == 1)
         {
             sensor_msgs.CameraInfo cameraInfo = cameraInfoPublisher.newMessage();

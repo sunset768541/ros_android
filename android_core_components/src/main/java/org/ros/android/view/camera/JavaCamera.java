@@ -16,6 +16,8 @@ import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
+import android.util.Range;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
@@ -153,13 +155,24 @@ public class JavaCamera implements NodeMain {
         }
     };
 
+    private Range<Integer> max;
+
     /**
      * starts CameraView
      */
     private void startCameraView(CameraDevice camera) throws CameraAccessException {
+        Range<Integer>[] fpsRanges = getCameraCharacteristics().get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
+        if (fpsRanges != null) {
+            for (Range<Integer> r : fpsRanges) {
+                Log.e("帧率的范围", r.toString());
+            }
+            max = fpsRanges[fpsRanges.length - 1];
+        }
+
+
         try {
             // to set request for CameraView
-            captureBuilder = camera.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
+            captureBuilder = camera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -169,6 +182,10 @@ public class JavaCamera implements NodeMain {
         captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CONTROL_AF_MODE_OFF);
         // 自动曝光
         captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CONTROL_AE_MODE_OFF);
+        if (max != null) {
+            Log.e("设置帧率", max.toString());
+            captureBuilder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, max);
+        }
 //        captureBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 2.0f);
         // 固定iso
 //        captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY,);
@@ -176,9 +193,12 @@ public class JavaCamera implements NodeMain {
         // 自动白平衡
         captureBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_AUTO);
         captureBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 3f);
-        captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 10000000L);
+        captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 8000000L);
         //output Surface
         List<Surface> outputSurfaces = new ArrayList<>();
+        captureBuilder.set(CaptureRequest.SENSOR_FRAME_DURATION, 16666668L);
+//        captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 8000000L);
+
 
         // 将imageReaders全部放入渲染
         for (ImageReader imageReader : imageReaders) {
