@@ -34,12 +34,12 @@ public class ImageUtils {
         assert (planes[2].getPixelStride() == 2);
 
         ByteBuffer y_plane = planes[0].getBuffer();
-        ByteBuffer uv_plane = planes[1].getBuffer();
+//        ByteBuffer uv_plane = planes[1].getBuffer();
         Mat y_mat = new Mat(h, w, CvType.CV_8UC1, y_plane);
-        Mat uv_mat = new Mat(h / 2, w / 2, CvType.CV_8UC2, uv_plane);
-        Imgproc.cvtColorTwoPlane(y_mat, uv_mat, originMat, Imgproc.COLOR_YUV2BGR_NV21);
+//        Mat uv_mat = new Mat(h / 2, w / 2, CvType.CV_8UC2, uv_plane);
+//        Imgproc.cvtColorTwoPlane(y_mat, uv_mat, originMat, Imgproc.COLOR_YUV2BGR_NV21);
 
-        return originMat;
+        return y_mat;
     }
 
     public static long getCameraTimestampsShiftWrtSensors(CameraCharacteristics cameraCharacteristics) {
