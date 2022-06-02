@@ -178,7 +178,7 @@ public class JavaCamera implements NodeMain {
         }
 
         captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-        // 不自动对焦,自动对焦会影响相机内参
+        // 不自动对焦
         captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CONTROL_AF_MODE_OFF);
         // 自动曝光
         captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CONTROL_AE_MODE_OFF);
@@ -192,10 +192,18 @@ public class JavaCamera implements NodeMain {
 
         // 自动白平衡
         captureBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_AUTO);
-        captureBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 3f);
+
+        //实际运行是对焦距离采用超焦距，以获得手机相机的最大景深
+        //标定时，对焦距离设置为可以清晰的排到标定板
+        //为啥不采用自动对焦，因为自动对焦时，图像会发生较大的变化，对于SLAM前后2帧对比造成干扰。
+        captureBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0.333f);//超焦距的计算  H=（f*f）/c*F
+        // H为计算的超焦距，f为焦距 c为弥散圆直径，F为光圈，弥散圆直径对于全画幅是0.03 ，对于半画幅要除以1.5，对于手机的CMOS，要根据DevCheck中读取到的相机裁切稀系数计算
+
+        //尽量降低曝光时间，减少卷帘快门的影响
         captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 8000000L);
         //output Surface
         List<Surface> outputSurfaces = new ArrayList<>();
+        //设置相机的帧率60
         captureBuilder.set(CaptureRequest.SENSOR_FRAME_DURATION, 16666668L);
 //        captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 8000000L);
 
